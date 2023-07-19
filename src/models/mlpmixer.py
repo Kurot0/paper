@@ -19,7 +19,7 @@ class PatchEmbeddings_transpose(nn.Module):
         super().__init__()
         self.proj_transpose = nn.Sequential(
             Rearrange("b (h w) c -> b c h w", h=h),
-            nn.Conv2d(in_channels=embed_dim, out_channels=out_chans, kernel_size=patch_size, stride=patch_size)
+            nn.ConvTranspose2d(in_channels=embed_dim, out_channels=out_chans, kernel_size=patch_size, stride=patch_size)
         )
     
     def forward(self, x):
