@@ -34,20 +34,19 @@ class EarlyStopping:
 class Trainer:
     def __init__(self, params):
         self.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-        self.params = params
 
-        data_path = self.params['data_path']
+        data_path = params['data_path']
         self.x_train = torch.load(data_path + '/x_train.pt').float().to(self.device)
         self.y_train = torch.load(data_path + '/y_train.pt').float().to(self.device)
         self.x_valid = torch.load(data_path + '/x_valid.pt').float().to(self.device)
         self.y_valid = torch.load(data_path + '/y_valid.pt').float().to(self.device)
 
-        self.checkpoint = self.params['checkpoint_path']
+        self.checkpoint = params['checkpoint_path']
 
-        self.batch_size = self.params['batch_size']
-        self.num_epochs = self.params['num_epochs']
-        self.patience = self.params['patience']
-        self.learning_rate = self.params['learning_rate']
+        self.batch_size = params['batch_size']
+        self.num_epochs = params['num_epochs']
+        self.patience = params['patience']
+        self.learning_rate = params['learning_rate']
 
         dataset = torch.utils.data.TensorDataset(self.x_train, self.y_train)
         self.data_loader = torch.utils.data.DataLoader(dataset, batch_size=self.batch_size, shuffle=True)
@@ -57,7 +56,7 @@ class Trainer:
         model_module = importlib.import_module(params['model_module'])
         model_class = getattr(model_module, params['model_class'])
 
-        self.model = model_class(**self.params).to(self.device)
+        self.model = model_class(**params).to(self.device)
 
         self.criterion = SSIMLoss()
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=self.learning_rate)
@@ -66,7 +65,7 @@ class Trainer:
         self.best_model = None
         self.best_loss = float('inf')
 
-        self.early_stop_flag = self.params['early_stop_flag']
+        self.early_stop_flag = params['early_stop_flag']
 
     def train_one_epoch(self):
         self.model.train()

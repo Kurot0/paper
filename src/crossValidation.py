@@ -13,22 +13,28 @@ def main():
 
     with open(args.config, 'r') as stream:
         params = yaml.safe_load(stream)
+    
+    params['early_stop_flag'] = 1
+    params['cross_validation_flag'] = 1
 
     psnr_results = []
     ssim_results = []
 
     for i in range(10):
         dir_name = 'crossValidation_all{}'.format(i)
-        print(f"Starting cross validation {i+1}")
+        print(f"Starting cross validation {i}")
         
         params['data_path'] = os.path.join('paper/data/cv_data', dir_name)
-        params['early_stop_flag'] = 1
         
         trainer = Trainer(params)
         trainer.train()
 
         inferencer = Inferencer(params)
-        inferencer.model.load_state_dict(trainer.early_stop_model)
+        if trainer.early_stop_model is not None:
+            inferencer.model.load_state_dict(trainer.early_stop_model)
+        else:
+            inferencer.model.load_state_dict(trainer.best_model)
+        inferencer.model.eval()
         inferencer.inference()
         
         psnr_results.append(inferencer.psnr)

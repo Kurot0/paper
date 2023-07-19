@@ -1,25 +1,26 @@
-batch_size: 
-num_epochs: 
-patience: 
-learning_rate: 
+batch_size: 4
+num_epochs: 400
+patience: 10
+learning_rate: 0.001
 
-img_size_in: 
-img_size_out: 
-patch_size: 
-in_chans: 
-out_chans: 
-embed_dim: 
-tokens_mlp_dim: 
-channels_mlp_dim: 
-num_blocks: 
-f_hidden: 
-drop_rate: 
+img_size_in: [992, 1344]
+img_size_out: [512, 512]
+patch_size: [16, 16]
+in_chans: 6
+out_chans: 1
+embed_dim: 128
+tokens_mlp_dim: 64
+channels_mlp_dim: 512
+num_blocks: 8
+f_hidden: 4
+drop_rate: 0.0
 
-early_stop_flag: 
+early_stop_flag: 0
+cross_validation_flag: 0
 
-model_module: 
-model_class: 
+model_module: 'models.mlpmixer_i2i'
+model_class: 'MixerNet'
 
-data_path: 
-mask_path: 
-checkpoint_path: 
+data_path: 'paper/data/exp_data'
+mask_path: 'paper/data/sea.png'
+checkpoint_path: 'paper/data/checkpoints'

@@ -11,9 +11,8 @@ from ssimloss import SSIMLoss
 class Inferencer:
     def __init__(self, params):
         self.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-        self.params = params
 
-        data_path = self.params['data_path']
+        data_path = params['data_path']
         self.x_test = torch.load(data_path + '/x_test.pt').float().to(self.device)
         self.y_test = torch.load(data_path + '/y_test.pt').float().to(self.device)
         self.y_pred_path = data_path + '/y_pred.pt'
@@ -21,11 +20,11 @@ class Inferencer:
         model_module = importlib.import_module(params['model_module'])
         model_class = getattr(model_module, params['model_class'])
 
-        self.model = model_class(**self.params).to(self.device)
+        self.model = model_class(**params).to(self.device)
 
-        if os.path.isfile(self.params['checkpoint_path'] + '/best.pth'):
-            self.model.load_state_dict(torch.load(self.params['checkpoint_path'] + '/best.pth'))
-        self.model.eval()
+        if params['cross_validation_flag'] == 0:
+            self.model.load_state_dict(torch.load(params['checkpoint_path'] + '/best.pth'))
+            self.model.eval()
 
         self.psnr = None
         self.ssim = None
